@@ -7,11 +7,12 @@ app.db = knex(knexfile.test)//agora app tem a propriedade de conexao com banco d
 
 consign({ cwd : 'src', verbose:false}) //diretório de ponto de partida
     .include('./config/middlewares.js')
+        .then('./services')
         .then('./routes')
         .then('./config/routes.js')
         .into(app)
-
+        
 app.get('/',(req, res)=>{
-    res.status(200).send()
+    res.status(200).send('server runing')
 })
 module.exports = app

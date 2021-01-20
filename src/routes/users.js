@@ -1,23 +1,19 @@
 module.exports = (app) => {
 
-    const findAll = () => {
-        app.get('/users', (req, res)=>{
-            app.db('users').select()
-                .then( result => res.status(200).json(result))
-        })
+    const findAll = (req, res) => {
+            app.services.users.findAll(req.body)
+                .then( result => {
+                    res.status(200).json(result)
+                })
     }    
     
-    const create = () => {
-        app.post('/users', async (req, res)=>{
-            app.db('users').insert(req.body)
-            .then( success => {
-                app.db('users').select().where('mail',req.body.mail)
-                    .then( result => {
-                        console.log(result[0].id)
-                        res.status(201).json(result[0])
-                    })
-            } )
-        })
+    const create = async (req, res) => {
+            let result = await app.services.users.save(req.body)
+            
+            if(result.error) {
+                return res.status(400).json(result)
+            }
+            return res.status(201).json(result[0])
     }
-    return { findAll, create}
+    return { findAll, create }
 }
