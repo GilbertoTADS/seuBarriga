@@ -10,6 +10,7 @@ module.exports = (app) => {
     const create = (req, res) => {
         app.services.accounts.save(req.body)
             .then( result =>{
+                if(result.error) return res.status(400).json(result)
                 res.status(201).json(result[0])
             })
     }
@@ -27,6 +28,13 @@ module.exports = (app) => {
                 res.status(200).json(result[0])
             })
     }
+    const deleteById = (req, res) => {
+        console.log(req.params)
+        app.services.accounts.deleteById(req.params.id)
+            .then( result => { 
+                res.status(204).send()
+            })
+    }
 
-    return { findAll,create, getById, updateById }
+    return { findAll,create, getById, updateById, deleteById }
 }

@@ -8,7 +8,9 @@ module.exports = (app) => {
         return app.db('accounts').select().where('user_id',account.user_id)
     }
 
-    const save = (account) => {
+    const save = async (account) => {
+        if(!account.name) return { error:'Nome é um atributo obrigatório' }
+
         return app.db('accounts').insert(account)
             .then( result =>  confirmInsert(account) )
     }
@@ -16,5 +18,8 @@ module.exports = (app) => {
         return app.db('accounts').update(account).where( {id} )
             .then( Confirm => findAll( {id}) )
     }
-    return {findAll, save, confirmInsert, update}
+    const deleteById = (id) => {
+        return app.db('accounts').del().where({id})
+    }
+    return {findAll, save, confirmInsert, update, deleteById}
 }

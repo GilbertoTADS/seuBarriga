@@ -13,5 +13,6 @@ module.exports = (app) => {
     app.route('/accounts/:id')
         .get(app.routes.accounts.getById)
         .put(app.routes.accounts.updateById)
+        .delete(app.routes.accounts.deleteById)
 
 }
