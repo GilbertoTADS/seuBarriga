@@ -12,7 +12,8 @@
     "knex:run": "knex migrate:latest --env test",
     "knex:users": "knex migrate:make create_users --env test",
     "knex:accounts": "knex migrate:make create_accounts --env test",
-    "knex:rollback": "knex migrate:latest --env test"
+    "knex:rollback": "knex migrate:latest --env test",
+    "knex:transaction": "knex migrate:make create_table_transactions --env test"
   },
   "keywords": [],
   "author": "",
