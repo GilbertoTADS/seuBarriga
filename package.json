@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/** test/** --fix",
-    "jest": "jest",
+    "jest": "jest --coverage --runInBand",
     "dev": "nodemon ./src/server.js",
     "secure-mode": "jest --watchAll --verbose=true",
     "knex:run": "knex migrate:latest --env test",
