@@ -1,15 +1,14 @@
 module.exports = {
-    test:{
-        client: 'mysql',
-        connection:{
-            host:'localhost',
-            user:'root',
-            password:'root',
-            database:'seuBarriga'
-        },
-    migrations:{
-        directory:'src/migrations',
-        }
-    }
-
-}
+  test: {
+    client: 'pg',
+    connection: {
+      host: 'localhost',
+      user: 'postgres',
+      password: 'admin',
+      database: 'barriga',
+    },
+    migrations: {
+      directory: 'src/migrations',
+    },
+  },
+};

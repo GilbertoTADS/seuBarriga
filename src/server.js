@@ -1,6 +1,3 @@
-const app = require('./app')
+const app = require('./app');
 
-
-app.listen(3001,()=>{
-    console.log('server started')
-})
+app.listen(3006, () => console.log('[Server] started::3001'));

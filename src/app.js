@@ -1,18 +1,31 @@
-const app =  require('express')()
-const consign = require('consign')
-const knex = require('knex')
-const knexfile = require('./../knexfile')
+const app = require('express')();
+const consign = require('consign');
+const knex = require('knex');
 
-app.db = knex(knexfile.test)//agora app tem a propriedade de conexao com banco de dados
+// TODO criar chaveamento dinamico
 
-consign({ cwd : 'src', verbose:false}) //diretório de ponto de partida
-    .include('./config/middlewares.js')
-        .then('./services')
-        .then('./routes')
-        .then('./config/routes.js')
-        .into(app)
-        
-app.get('/',(req, res)=>{
-    res.status(200).send('server runing')
-})
-module.exports = app
+const knexfile = require('../knexfile');
+
+app.db = knex(knexfile.test);
+
+app.get('/', (req, res) => {
+  res.status(200).end();
+});
+
+consign({ cwd: 'src', verbose: false })
+  .include('config/passport.js')
+  .then('config/middlewares.js')
+  .then('services')
+  .then('routes')
+  .then('config/router.js')
+  .into(app);
+
+app.use((err, req, res, next) => {
+  const { name, message, stack } = err;
+  if (name === 'ValidationError') res.status(400).json({ error: message });
+  if (name === 'RecursoIndevidoError') res.status(403).json({ error: message });
+  else res.status(500).json({ name, message, stack });
+  next(err);
+});
+
+module.exports = app;

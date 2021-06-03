@@ -1,25 +1,30 @@
-const { isGetAccessor } = require("typescript")
+const bCrypt = require('bcrypt-nodejs');
+const ValidationError = require('../errors/ValidationError');
 
 module.exports = (app) => {
-    const findAll = ( filter = {} ) => {
-       return app.db('users').where(filter).select()
-    }
-    const confirmInsert = (user) => {
-        return app.db('users').select().where('mail',user.mail)
-    }
-    const save = async (user) => {
-        if(!user.name ) return { error:'Nome é um atributo obrigátorio'}
-        if(!user.mail) return { error:'E-mail é um atributo obrigátorio'}
-        if(!user.passwd) return { error:'Senha é um atributo obrigátorio'}
-        
-        const userDb = await findAll({ mail:user.mail})
-        if(userDb && userDb.length > 0) return { error: 'Já existe um usuário com este e-mail'}
+  const findAll = async () => {
+    const result = await app.db('users').select(['id', 'name', 'mail']);
+    return result;
+  };
+  const find = async (filter = {}) => {
+    const userDb = await app.db('users').select().where(filter).first();
+    return userDb;
+  };
+  const getPasswdHash = (passwd) => {
+    const salt = bCrypt.genSaltSync(10);
+    return bCrypt.hashSync(passwd, salt);
+  };
+  const save = async (user) => {
+    if (!user.name) throw new ValidationError('Nome é um atributo obrigatório');
+    if (!user.mail) throw new ValidationError('Email é um atributo obrigatório');
+    if (!user.passwd) throw new ValidationError('Senha é um atributo obrigatório');
 
-        return app.db('users').insert(user)
-            .then( singUp => {
-                return confirmInsert(user)
-            })
-        
-    }
-    return { findAll, save, confirmInsert }
-}
+    const userDb = await find({ mail: user.mail });
+    if (userDb) throw new ValidationError('Já existe um usuário com este email');
+    const newUser = { ...user };
+    newUser.passwd = getPasswdHash(user.passwd);
+    const result = await app.db('users').insert(newUser, ['id', 'name', 'mail']);
+    return result;
+  };
+  return { findAll, find, save };
+};

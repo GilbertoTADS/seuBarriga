@@ -1,18 +1,20 @@
-test('Devo conhecer as assertivas do jest',()=>{
-    let number = null
-    expect(number).toBeNull()//é nulo?
-    number = 10
-    expect(number).not.toBeNull()//não é nulo?
-    expect(number).toBe(10)//igual a 10? obs: apenas compara igualdade entre variaveis simples
-    expect(number).toEqual(10)//igual a 10?(2º forma)
-    expect(number).toBeGreaterThan(9)//maior que 9?
-    expect(number).toBeLessThan(11)//menor que 11?
-})
-test('Devo saber trabalhar com objetos',()=>{
-    const obj = { name: 'John', email: 'john@mail.com'}
-    expect(obj).toHaveProperty('name','John')//possui a propriedade 'name' e seu valor é 'John'?
-    expect(obj.name).toBe('John')//O valor da propriedade name é 'John'?
+test('Devo conhecer as principais assertivas do jest', () => {
+  let num = null;
+  expect(num).toBeNull();
+  num = 10;
+  expect(num).not.toBeNull();
+  expect(num).toBe(10);
+  expect(num).toEqual(10);
+  expect(num).toBeGreaterThan(9);
+  expect(num).toBeLessThan(11);
+});
+test('Devo saber trabalhar com objetos', () => {
+  const obj = { name: 'John', mail: 'john@mail.com' };
+  expect(obj).toHaveProperty('name');
+  expect(obj).toHaveProperty('name', 'John');
+  expect(obj.name).toBe('John');
+  const obj2 = { name: 'John', mail: 'john@mail.com' };
 
-    const obj2 = { name: 'John', email: 'john@mail.com'}
-    expect(obj).toEqual(obj2)//obj é igual a obj2?
-})
+  expect(obj).toEqual(obj2);
+  expect(obj).toBe(obj);
+});

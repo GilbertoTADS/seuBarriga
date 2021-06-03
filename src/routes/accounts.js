@@ -1,40 +1,57 @@
+const express = require('express');
+const RecursoIndevidoError = require('../errors/RecursoIndevidoError.js');
+
 module.exports = (app) => {
-    
-    const findAll = (req, res) => {
-        app.services.accounts.findAll()
-            .then( result => {
-                res.status(200).json(result)
-            })
-    }   
+  const router = express.Router();
 
-    const create = (req, res) => {
-        app.services.accounts.save(req.body)
-            .then( result =>{
-                if(result.error) return res.status(400).json(result)
-                res.status(201).json(result[0])
-            })
+  router.param('id', async (req, res, next) => {
+    try {
+      const accDb = await app.services.accounts.find({ id: req.params.id });
+      if (accDb.userId !== req.user.id) throw new RecursoIndevidoError();
+      else next();
+    } catch (err) {
+      next(err);
     }
-
-    const getById = (req, res) => {
-        let { id } = req.params
-        app.services.accounts.findAll( { user_id: id })
-            .then( result => {
-                res.status(200).json(result[0])
-            })
+  });
+  router.post('/', async (req, res, next) => {
+    try {
+      const account = await app.services.accounts.save({ ...req.body, userId: req.user.id });
+      return res.status(201).json(account[0]);
+    } catch (err) {
+      return next(err);
     }
-    const updateById = (req, res) => {
-        app.services.accounts.update(req.params.id,req.body)
-            .then( result => {
-                res.status(200).json(result[0])
-            })
+  });
+  router.get('/', async (req, res, next) => {
+    try {
+      const result = await app.services.accounts.findAll(req.user.id);
+      res.status(200).json(result);
+    } catch (err) {
+      next(err);
     }
-    const deleteById = (req, res) => {
-        console.log(req.params)
-        app.services.accounts.deleteById(req.params.id)
-            .then( result => { 
-                res.status(204).send()
-            })
+  });
+  router.get('/:id', async (req, res, next) => {
+    try {
+      const result = await app.services.accounts.find({ id: req.params.id });
+      return res.status(200).json(result);
+    } catch (err) {
+      return next(err);
     }
-
-    return { findAll,create, getById, updateById, deleteById }
-}
+  });
+  router.put('/:id', async (req, res, next) => {
+    try {
+      const result = await app.services.accounts.update(req.params.id, req.body);
+      res.status(200).json(result[0]);
+    } catch (err) {
+      next(err);
+    }
+  });
+  router.delete('/:id', async (req, res, next) => {
+    try {
+      const result = await app.services.accounts.remove(req.params.id);
+      res.status(204).json(result);
+    } catch (err) {
+      next(err);
+    }
+  });
+  return router;
+};
