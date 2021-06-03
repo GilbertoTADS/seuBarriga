@@ -11,4 +11,16 @@ module.exports = {
       directory: 'src/migrations',
     },
   },
+  prod: {
+    client: 'pg',
+    connection: {
+      host: 'localhost',
+      user: 'postgres',
+      password: 'admin',
+      database: 'seubarriga',
+    },
+    migrations: {
+      directory: 'src/migrations',
+    },
+  },
 };

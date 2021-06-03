@@ -17,12 +17,13 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"NODE_ENV=prod node src/server.js",
     "lint": "eslint src/** test/** --fix",
     "jest": "jest --coverage --runInBand --forceExit",
-    "dev": "nodemon ./src/server.js",
-    "secure-mode": "jest --watchAll --verbose=true",
+    "dev": "export NODE_ENV=test nodemon ./src/server.js",
+    "secure-mode": "export NODE_ENV=test jest --watchAll --verbose=true",
     "knex:run": "knex migrate:latest --env test",
+    "knex:run:prod": "knex migrate:latest --env prod",
     "knex:users": "knex migrate:make create_users --env test",
     "knex:accounts": "knex migrate:make create_accounts --env test",
     "knex:rollback": "knex migrate:latest --env test",
